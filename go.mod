@@ -1,3 +1,3 @@
-module kafka-studies
+module scribbler
 
 go 1.19
