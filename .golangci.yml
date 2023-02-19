@@ -1,0 +1,79 @@
+# Galangci-lint configuration file
+service:
+  golangci-lint-version: 1.50.1
+
+run:
+  concurrency: 4
+  skip-dirs-use-default: true
+  tests: true
+  timeout: 5m
+
+linters:
+  # Explicitly enabling linters to have better control over the settings.
+  disable-all: true
+  enable:
+    - errcheck # Unchecked errors.
+    - gosimple # Simplifying code.
+    - govet # Reports suspicious constructs.
+    - ineffassign # Detects when assignments to existing variables are not used.
+    - staticcheck # A set of rules from staticcheck.
+    - typecheck # Like the front-end of a Go compiler, parses and type-checks Go code.
+    - unused # Checks Go code for unused constants, variables, functions and types.
+    - bodyclose # Checks whether HTTP response body is closed successfully.
+    - depguard # Go linter that checks if package imports are in a list of acceptable packages.
+    - gochecknoinits # Checks that no init functions are present in Go code.
+    - goconst # Finds repeated strings that could be replaced by a constant.
+    - gocyclo # Computes and checks the cyclomatic complexity of functions.
+    - gofmt # Gofmt checks whether code was gofmt-ed. AutoFix.
+    - goimports # In addition to fixing imports, goimports also formats your code in the same style as gofmt. AutoFix.
+    - gosec # Inspects source code for security problems.
+    - misspell # Finds commonly misspelled English words in comments. AutoFix.
+    - nakedret # Finds naked returns in functions greater than a specified function length.
+    - exportloopref # Checks for pointers to enclosing loop variables.
+    - unconvert # Remove unnecessary type conversions.
+    - unparam # Reports unused function parameters.
+    - stylecheck # Stylecheck is a replacement for golint.
+    - revive # Revive is a replacement for golint.
+    - whitespace # Tool for detection of leading and trailing whitespace. AutoFix.
+    - lll # Long line linter reports long lines (over 170 chars).
+    - godot # Check if comments end in a period. AutoFix.
+    - thelper # Makes sure the test helper functions start t.Helper().
+    - nolintlint # Reports ill-formed or insufficient nolint directives. AutoFix.
+    - goprintffuncname # Checks that printf-like functions are named with f at the end.
+    - gofumpt # Basically a gofmt on steroids. AutoFix.
+    - errname # Checks that sentinel errors are prefixed with the Err and error types are suffixed with the Error.
+    - errorlint # Finds code that will cause problems with the error wrapping scheme introduced in Go 1.13.
+    - asciicheck # Checks that your code does not contain non-ASCII identifiers.
+    - bidichk # Checks for dangerous unicode character sequences.
+    - makezero # Finds slice declarations with non-zero initial length.
+    - prealloc # Finds slice declarations that could potentially be pre-allocated.
+    - predeclared # Finds code that shadows one of Go's predeclared identifiers.
+    - tenv # tenv is analyzer that detects using os.Setenv instead of t.Setenv since Go1.17.
+    - wastedassign # Finds wasted assignment statements.
+    - contextcheck # Check whether a function uses a non-inherited context.
+    - dogsled # Checks assignments with too many blank identifiers
+
+
+linters-settings:
+  goconst:
+    ignore-tests: true
+  lll:
+    # Max line length, lines longer will be reported.
+    # '\t' is counted as 1 character by default, and can be changed with the tab-width option.
+    # Default: 120.
+    line-length: 170
+
+issues:
+  fix: true
+  exclude-rules:
+    # Exclude some linters from running on tests files.
+    - path: _test\.go
+      linters:
+        - ineffassign
+        - dupl
+        - varnamelen
+        - goerr113
+        - contextcheck
+        - funlen
+        - errcheck
+        - bodyclose
