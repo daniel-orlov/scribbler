@@ -8,3 +8,29 @@ This application consists of four main components:
 - Kafka producer that sends tweets to Kafka
 - Kafka consumer that reads tweets from Kafka
 - `messagesaver` service that stores tweets using the Elasticsearch
+
+## Project structure
+
+>
+>> /cfg - configuration files
+>
+>> /cmd - entry points for the application
+>
+>> /deploy - deployment artifacts
+>
+>> /internal - internal application code
+>>
+>>> /adapters - adapters for external services
+>>
+>>> /models - domain models
+>>
+>>> /services - business logic
+>>
+>>> /storage - storage adapters
+>>
+>>> /transport - transport layer
+>>
+>
+>> /pkg - reusable packages
+>
+
