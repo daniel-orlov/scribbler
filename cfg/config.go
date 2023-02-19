@@ -18,6 +18,8 @@ type Config struct {
 	ESAddress string `envconfig:"ES_ADDRESS" default:"http://localhost:9200"`
 	// ESIndex is the name of the Elasticsearch index to write to.
 	ESIndex string `envconfig:"ES_INDEX" default:"tweets"`
+	// MaxTweetsPerFetch is the maximum number of tweets to fetch per request.
+	MaxTweetsPerRequest int `envconfig:"MAX_TWEETS_PER_REQUEST" default:"100"`
 }
 
 // NewConfig returns a new Config instance, populated with environment variables and defaults.
