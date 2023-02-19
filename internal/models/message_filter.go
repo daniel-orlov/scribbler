@@ -1,4 +1,3 @@
 package models
 
-type MessageFilter struct {
-}
+type MessageFilter struct{}

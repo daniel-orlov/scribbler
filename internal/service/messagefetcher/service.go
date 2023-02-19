@@ -3,9 +3,9 @@ package messagefetcher
 import (
 	"context"
 
-	"go.uber.org/zap"
-
 	"scribbler/internal/models"
+
+	"go.uber.org/zap"
 )
 
 type MessageSource interface {

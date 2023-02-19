@@ -3,9 +3,9 @@ package messagesaver
 import (
 	"context"
 
-	"go.uber.org/zap"
-
 	"scribbler/internal/models"
+
+	"go.uber.org/zap"
 )
 
 type MessageStore interface {
