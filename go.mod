@@ -4,6 +4,11 @@ go 1.19
 
 require (
 	github.com/Shopify/sarama v1.38.1
+	github.com/brianvoe/gofakeit/v6 v6.20.1
+	github.com/elastic/go-elasticsearch/v8 v8.4.0-alpha.1.0.20230208111926-11608f98966a
+	github.com/kelseyhightower/envconfig v1.4.0
+	github.com/oklog/ulid v1.3.1
+	github.com/pkg/errors v0.8.1
 	go.uber.org/zap v1.24.0
 )
 
@@ -12,6 +17,7 @@ require (
 	github.com/eapache/go-resiliency v1.3.0 // indirect
 	github.com/eapache/go-xerial-snappy v0.0.0-20230111030713-bf00bc1b83b6 // indirect
 	github.com/eapache/queue v1.1.0 // indirect
+	github.com/elastic/elastic-transport-go/v8 v8.0.0-20230201152525-7be14259265a // indirect
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/hashicorp/errwrap v1.0.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
