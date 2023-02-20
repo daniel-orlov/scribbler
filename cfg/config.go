@@ -20,6 +20,14 @@ type Config struct {
 	ESIndex string `envconfig:"ES_INDEX" default:"tweets"`
 	// MaxTweetsPerFetch is the maximum number of tweets to fetch per request.
 	MaxTweetsPerRequest int `envconfig:"MAX_TWEETS_PER_REQUEST" default:"100"`
+	// GinMode is the mode to run the Gin engine in.
+	GinMode string `envconfig:"GIN_MODE" default:"release"`
+	// GinPort is the port to run the Gin engine on.
+	GinPort int `envconfig:"GIN_PORT" default:"8080"`
+	// GinReadTimeout is the read timeout for the Gin engine.
+	GinReadTimeout int `envconfig:"GIN_READ_TIMEOUT" default:"5"`
+	// GinWriteTimeout is the write timeout for the Gin engine.
+	GinWriteTimeout int `envconfig:"GIN_WRITE_TIMEOUT" default:"10"`
 }
 
 // NewConfig returns a new Config instance, populated with environment variables and defaults.
