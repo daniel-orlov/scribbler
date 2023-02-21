@@ -34,3 +34,12 @@ This application consists of four main components:
 >> /pkg - reusable packages
 >
 
+## Development
+
+### Prerequisites
+
+- Docker
+- Docker Compose
+- Go 1.19
+- Make
+- [golangci-lint](https://golangci-lint.run/usage/install/#local-installation)
