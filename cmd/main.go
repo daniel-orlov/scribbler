@@ -16,6 +16,7 @@ import (
 	"scribbler/internal/storage/messagequeue"
 	"scribbler/internal/storage/messagestore"
 	"scribbler/internal/transport"
+	"scribbler/internal/transport/messages"
 )
 
 func main() {
@@ -129,7 +130,12 @@ func main() {
 	engine := gin.New()
 	server := transport.NewServer(logger, config, engine)
 
-	// register the handlers.
-	server.RegisterHandlers(msgFetcherSvc, msgSaverSvc)
+	// create handlers.
+	messages.NewHandler(logger, msgFetcherSvc)
 
+	// register the handlers.
+	server.RegisterHandlers()
+
+	// Run the server.
+	logger.Fatal("server failed to run", zap.Error(server.Run()))
 }
