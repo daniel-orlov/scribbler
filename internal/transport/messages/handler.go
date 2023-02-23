@@ -20,8 +20,8 @@ type Handler struct {
 	uc     UseCase
 }
 
-func NewHandler(uc UseCase) *Handler {
-	return &Handler{uc: uc}
+func NewHandler(logger *zap.Logger, uc UseCase) *Handler {
+	return &Handler{logger: logger, uc: uc}
 }
 
 func (h *Handler) Init(root *gin.RouterGroup, middlewares []func() gin.HandlerFunc) {
