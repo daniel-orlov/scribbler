@@ -6,20 +6,20 @@ import (
 	"scribbler/cfg"
 )
 
-// HandlerInitializer is an interface for abstracting handler initialization from a router.
-type HandlerInitializer interface {
+// Handler is an interface for abstracting handler initialization from a router.
+type Handler interface {
 	Init(rg *gin.RouterGroup, middlewares []func() gin.HandlerFunc)
 }
 
 // Router holds all the handlers.
 // Init method should be called for its initialization before use.
 type Router struct {
-	handlers []HandlerInitializer
+	handlers []Handler
 	// isInitialized checks if router is initialized.
 	isInitialized bool
 }
 
-func NewRouter(handlers []HandlerInitializer) *Router {
+func NewRouter(handlers []Handler) *Router {
 	return &Router{handlers: handlers}
 }
 
