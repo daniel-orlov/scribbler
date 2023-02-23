@@ -1,6 +1,9 @@
 package messages
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
+)
 
 const (
 	RootEndpoint = "/messages"
@@ -13,7 +16,8 @@ type UseCase interface {
 }
 
 type Handler struct {
-	uc UseCase
+	logger *zap.Logger
+	uc     UseCase
 }
 
 func NewHandler(uc UseCase) *Handler {
