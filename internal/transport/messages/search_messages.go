@@ -1,11 +1,14 @@
 package messages
 
 import (
-	"context"
+	"net/http"
 
-	"scribbler/internal/models"
+	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 )
 
-func (h *Handler) SearchMessages(ctx context.Context, query string) ([]models.Message, error) {
-	return nil, nil
+func (h *Handler) SearchMessages(gctx *gin.Context) {
+	h.logger.Debug("endpoint hit", zap.String("handler", "SearchMessages"))
+
+	gctx.JSON(http.StatusCreated, nil)
 }
