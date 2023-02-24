@@ -1,8 +1,12 @@
 package messages
 
 import (
+	"context"
+
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
+
+	"scribbler/internal/models"
 )
 
 const (
@@ -13,6 +17,7 @@ const (
 //go:generate mockgen -source ./handler.go -package=mock -destination=./mock/usecase_mock.go
 
 type UseCase interface {
+	FetchMessages(ctx context.Context, query *models.MessageFilter) error
 }
 
 type Handler struct {
