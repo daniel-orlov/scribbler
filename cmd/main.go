@@ -7,7 +7,6 @@ import (
 	"github.com/elastic/go-elasticsearch/v8"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
-	"go.uber.org/zap/zapcore"
 
 	"scribbler/cfg"
 	"scribbler/internal/adapters/twit"
@@ -16,7 +15,9 @@ import (
 	"scribbler/internal/storage/messagequeue"
 	"scribbler/internal/storage/messagestore"
 	"scribbler/internal/transport"
-	"scribbler/internal/transport/messages"
+	"scribbler/internal/transport/handlers/messages"
+	"scribbler/internal/transport/middlewares/loggermw"
+	"scribbler/pkg/logging"
 )
 
 func main() {
@@ -31,13 +32,7 @@ func main() {
 	//------------------------------------------------------------------------------//
 	//                           	     LOGGER     	                            //
 	//------------------------------------------------------------------------------//
-	logger, err := zap.NewDevelopment(
-		zap.IncreaseLevel(zapcore.InfoLevel),
-		zap.AddStacktrace(zapcore.ErrorLevel),
-	)
-	if err != nil {
-		log.Fatal("failed to create logger", err)
-	}
+	logger := logging.Logger()
 	defer func(logger *zap.Logger) {
 		err = logger.Sync()
 		if err != nil {
@@ -54,16 +49,16 @@ func main() {
 
 	kafkaClient, err := sarama.NewClient([]string{config.KafkaAddress}, kafkaConfig)
 	if err != nil {
-		logger.Fatal("failed to create client", zap.Error(err))
+		logger.Fatal("failed to create kafka client", zap.Error(err))
 	}
-	logger.Info("created client", zap.String("client", config.KafkaAddress))
+	logger.Info("created kafka client", zap.String("client", config.KafkaAddress))
 
 	// close the kafka client
 	defer func(kafkaClient sarama.Client) {
 		if err = kafkaClient.Close(); err != nil {
-			logger.Error("failed to close client", zap.Error(err))
+			logger.Error("failed to close kafka client", zap.Error(err))
 		}
-		logger.Info("closed client")
+		logger.Info("closed kafka client")
 	}(kafkaClient)
 
 	// TWITTER
@@ -84,14 +79,14 @@ func main() {
 	//------------------------------------------------------------------------------//
 	//                           	     QUEUES     	                            //
 	//------------------------------------------------------------------------------//
-	// create a new Kafka consumer.
+	// Create a new Kafka consumer.
 	consumer, err := sarama.NewConsumerFromClient(kafkaClient)
 	if err != nil {
 		logger.Fatal("failed to create consumer", zap.Error(err))
 	}
 	logger.Info("created Kafka consumer")
 
-	// close the consumer
+	// Close the consumer
 	defer func(consumer sarama.Consumer) {
 		// close the consumer
 		if err = consumer.Close(); err != nil {
@@ -100,14 +95,14 @@ func main() {
 		logger.Info("closed Kafka consumer")
 	}(consumer)
 
-	// create a new Kafka producer.
+	// Create a new Kafka producer.
 	producer, err := sarama.NewSyncProducerFromClient(kafkaClient)
 	if err != nil {
 		logger.Fatal("failed to create producer", zap.Error(err))
 	}
 	logger.Info("created Kafka producer")
 
-	// close the producer
+	// Close the producer
 	defer func(producer sarama.SyncProducer) {
 		if err = producer.Close(); err != nil {
 			logger.Error("failed to close producer", zap.Error(err))
@@ -122,19 +117,25 @@ func main() {
 	//------------------------------------------------------------------------------//
 	msgFetcherSvc := messagefetcher.NewService(logger, twitterClient, msgQueue)
 	msgSaverSvc := messagesaver.NewService(logger, msgStore, msgQueue)
+	_ = msgSaverSvc
 
 	//------------------------------------------------------------------------------//
 	//                           	    HANDLERS     	                            //
 	//------------------------------------------------------------------------------//
-	// create a new HTTP server using Gin.
-	engine := gin.New()
-	server := transport.NewServer(logger, config, engine)
+	server := transport.NewServer(logger, config)
 
-	// create handlers.
-	messages.NewHandler(logger, msgFetcherSvc)
+	// Handlers.
+	messagesH := messages.NewHandler(logger, msgFetcherSvc)
 
-	// register the handlers.
-	server.RegisterHandlers()
+	// Middlewares.
+	globalMiddlewares := []func() gin.HandlerFunc{
+		loggermw.Logger,
+	}
+
+	// Register the handlers.
+	server.RegisterHandlers(map[transport.Handler][]func() gin.HandlerFunc{
+		messagesH: globalMiddlewares,
+	})
 
 	// Run the server.
 	logger.Fatal("server failed to run", zap.Error(server.Run()))
