@@ -47,7 +47,7 @@ func (s *Server) init() *http.Server {
 	s.engine.Use(ginzap.Ginzap(s.logger, time.RFC3339, true))
 	s.engine.Use(ginzap.RecoveryWithZap(s.logger, true))
 
-	// Setting up the server.
+	// Setting up the server defaults.
 	s.engine.MaxMultipartMemory = EightMb
 	s.engine.NoRoute(func(c *gin.Context) {
 		c.JSON(http.StatusNotFound, gin.H{"error": "not found"})
@@ -73,9 +73,9 @@ func (s *Server) Run() error {
 }
 
 func (s *Server) RegisterHandlers(handlers map[Handler][]func() gin.HandlerFunc) {
-	root := s.engine.Group("")
+	v1 := s.engine.Group("api/v1")
 
 	for handler, mids := range handlers {
-		handler.Init(root, mids)
+		handler.Init(v1, mids)
 	}
 }
