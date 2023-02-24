@@ -5,6 +5,11 @@ run: ## Run the application
 	@echo "> Running the scribbler..."
 	go run cmd/main.go
 
+.PHONY: test
+test: ## Run tests
+	@echo "> Testing..."
+	go test -v ./...
+
 .PHONY: tidy
 tidy: ## Clean and format Go code
 	@echo "> Tidying..."
@@ -25,6 +30,7 @@ lint-host: ## Run golangci-lint directly on host
 .PHONY: help
 help: ## Show this help
 	@echo "make run - Run the application"
+	@echo "make test - Run tests"
 	@echo "make tidy - Clean and format Go code"
 	@echo "make fmt - Format Go code"
 	@echo "make lint-host - Run golangci-lint directly on host"
