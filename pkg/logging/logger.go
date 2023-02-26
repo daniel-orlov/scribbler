@@ -21,8 +21,26 @@ func Logger() *zap.Logger {
 }
 
 func initLogger() *zap.Logger {
-	logger, err := zap.NewDevelopment(
-		zap.IncreaseLevel(zapcore.InfoLevel),
+	cfg := zap.Config{
+		Encoding:         "json",
+		Level:            zap.NewAtomicLevelAt(zapcore.InfoLevel),
+		OutputPaths:      []string{"stdout"},
+		ErrorOutputPaths: []string{"stderr"},
+		EncoderConfig: zapcore.EncoderConfig{
+			MessageKey:     "message",
+			LevelKey:       "severity",
+			TimeKey:        "timestamp",
+			CallerKey:      "caller",
+			StacktraceKey:  "stacktrace",
+			LineEnding:     zapcore.DefaultLineEnding,
+			EncodeLevel:    zapcore.LowercaseLevelEncoder,
+			EncodeTime:     zapcore.ISO8601TimeEncoder,
+			EncodeDuration: zapcore.SecondsDurationEncoder,
+			EncodeCaller:   zapcore.ShortCallerEncoder,
+		},
+	}
+
+	logger, err := cfg.Build(
 		zap.AddStacktrace(zapcore.ErrorLevel),
 	)
 	if err != nil {
